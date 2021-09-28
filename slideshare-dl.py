@@ -63,10 +63,12 @@ def download_slides(url):  # {{{
     for idx, image in enumerate(images, start=1):
         image_url = image.get(res).split("?")[0]
         image_name = image_url.split("/")[-1]
-        print(f"Downloading slide {idx}\r", end="")
-        os.system(
-            f"curl.exe -s {image_url} -o {os.path.join('temp', image_name)}"
-        )  # }}}
+        image_path = os.path.join("temp", image_name)
+        if os.path.isfile(image_path):
+            print(f"Slide: {idx} exists\r", end="")
+        else:
+            print(f"Downloading slide: {idx}\r", end="")
+            os.system(f"curl.exe -s {image_url} -o {image_path}")  # }}}
 
 
 def convert_to_pdf(pdf_name, no_pdf=False):  # {{{
