@@ -10,7 +10,7 @@ import img2pdf
 import requests
 
 
-TEMP_DIR = os.path.join(os.getcwd(), "temp")
+SLIDES_FOLDER = os.path.join(os.getcwd(), "slides")
 
 
 def create_parser():  # {{{
@@ -38,8 +38,8 @@ def create_parser():  # {{{
 
 def download_slide(idx, image_url, image_path):  # {{{
     # Print slide being downloaded
-    print(f"Downloading slide: {idx}", end="\r")
-    # Download slide, save it in "temp" folder
+    print(f"Downloading slide: {idx}", end="\r", flush=True)
+    # Download slide, save it in "slides" folder
     return os.system(f"curl.exe -s {image_url} -o {image_path}")  # }}}
 
 
@@ -55,9 +55,9 @@ def download_slides(url):  # {{{
     images = soup.find_all("img", class_="slide_image")
     no_of_images = len(images)
 
-    # Make "temp" dir in cwd
-    if not os.path.isdir(TEMP_DIR):
-        os.mkdir("temp")
+    # Make "slides" dir in cwd
+    if not os.path.isdir(SLIDES_FOLDER):
+        os.mkdir("slides")
 
     # Use highest slide resolution available
     # Exit if not found
@@ -74,33 +74,30 @@ def download_slides(url):  # {{{
             image_url = image.get(res).split("?")[0]
             # Format image name to include slide index (with leading zeros)
             image_name = (
-                str(idx).zfill(no_of_images // 100) + "-" + image_url.split("/")[-1]
+                str(idx).zfill(len(str(no_of_images))) + "-" + image_url.split("/")[-1]
             )
-            image_path = os.path.join("temp", image_name)
+            image_path = os.path.join("slides", image_name)
             if os.path.isfile(image_path):
-                print(f"Slide: {idx} exists", end="\r")
+                print(f"Slide: {idx} exists", end="\r", flush=True)
             else:
                 executor.submit(download_slide, idx, image_url, image_path)  # }}}
 
 
 def convert_to_pdf(pdf_name, no_pdf=False):  # {{{
     # Get all slides sorted by name
-    files = glob.glob("temp/*")
+    files = glob.glob("slides/*")
 
     if not no_pdf:
-        print("Generating pdf...\r", end="", flush=True)
+        print("Generating pdf...", end="\r", flush=True)
 
         # Combine slides to a pdf using img2pdf
         with open(f"{pdf_name}.pdf", "wb") as pdf:
             pdf.write(img2pdf.convert(files))
 
-        print(f"Generated {pdf_name}.pdf")
+        print(f"Generated: {pdf_name}.pdf")
 
-        # Remove "temp" folder
-        shutil.rmtree(TEMP_DIR)
-    else:
-        # Rename "temp" folder to "slides"
-        os.rename(TEMP_DIR, os.path.join(os.getcwd(), "slides"))  # }}}
+        # Remove "slides" folder
+        shutil.rmtree(SLIDES_FOLDER)  # }}}
 
 
 if __name__ == "__main__":
