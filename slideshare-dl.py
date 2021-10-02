@@ -1,6 +1,5 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
-import glob
 import os
 import shutil
 from sys import exit
@@ -38,7 +37,7 @@ def create_parser():  # {{{
 
 def download_slide(idx, image_url, image_path):  # {{{
     # Print slide being downloaded
-    print(f"Downloading slide: {idx}", end="\r", flush=True)
+    print("\r" + f"Downloading slide: {idx}", end="", flush=True)
     # Download slide, save it in "slides" folder
     return os.system(f"curl.exe -s {image_url} -o {image_path}")  # }}}
 
@@ -78,23 +77,23 @@ def download_slides(url):  # {{{
             )
             image_path = os.path.join("slides", image_name)
             if os.path.isfile(image_path):
-                print(f"Slide: {idx} exists", end="\r", flush=True)
+                print("\r" + f"Slide: {idx} exists", end="", flush=True)
             else:
                 executor.submit(download_slide, idx, image_url, image_path)  # }}}
 
 
 def convert_to_pdf(pdf_name, no_pdf=False):  # {{{
     # Get all slides sorted by name
-    files = glob.glob("slides/*")
+    slides = [os.path.join(SLIDES_FOLDER, slide) for slide in os.listdir(SLIDES_FOLDER)]
 
     if not no_pdf:
-        print("Generating pdf...", end="\r", flush=True)
+        print("\r" + "Generating pdf...", end="", flush=True)
 
         # Combine slides to a pdf using img2pdf
         with open(f"{pdf_name}.pdf", "wb") as pdf:
-            pdf.write(img2pdf.convert(files))
+            pdf.write(img2pdf.convert(slides))
 
-        print(f"Generated: {pdf_name}.pdf")
+        print("\r" + f"Generated: {pdf_name}.pdf")
 
         # Remove "slides" folder
         shutil.rmtree(SLIDES_FOLDER)  # }}}
