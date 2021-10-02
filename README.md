@@ -30,3 +30,8 @@ optional arguments:
   -h, --help  show this help message and exit
   --nopdf     Do not combine slides into a pdf. (Individual slides are saved in "slides" folder)
 ```
+
+## Todo
+
+- [x] Speed up download using multi-threading
+- [ ] Implement OCR
