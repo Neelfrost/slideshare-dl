@@ -12,7 +12,7 @@ import requests
 SLIDES_FOLDER = os.path.join(os.getcwd(), "slides")
 
 
-def create_parser():  # {{{
+def create_parser():
     # Init parser
     parser = argparse.ArgumentParser(
         description="Download a slideshare presentation.",
@@ -32,17 +32,17 @@ def create_parser():  # {{{
     )
 
     # Return args namespace
-    return parser.parse_args()  # }}}
+    return parser.parse_args()
 
 
-def download_slide(idx, image_url, image_path):  # {{{
+def download_slide(idx, image_url, image_path):
     # Print slide being downloaded
-    print("\r" + f"Downloading slide: {idx}", end="", flush=True)
+    print("\x1b[1K\r" + f"Downloading slide: {idx}", end="")
     # Download slide, save it in "slides" folder
-    return os.system(f"curl.exe -s {image_url} -o {image_path}")  # }}}
+    return os.system(f"curl.exe -s {image_url} -o {image_path}")
 
 
-def download_slides(url):  # {{{
+def download_slides(url):
     # Check if url if of slideshare
     # Exit if not
     if r"www.slideshare.net" not in url:
@@ -77,26 +77,28 @@ def download_slides(url):  # {{{
             )
             image_path = os.path.join("slides", image_name)
             if os.path.isfile(image_path):
-                print("\r" + f"Slide: {idx} exists", end="", flush=True)
+                print("\x1b[1K\r" + f"Slide: {idx} exists", end="")
             else:
-                executor.submit(download_slide, idx, image_url, image_path)  # }}}
+                executor.submit(download_slide, idx, image_url, image_path)
+    # "\x1b[1K" clear to end of line
+    print("\x1b[1K\r" + "Slides downloaded")
 
 
-def convert_to_pdf(pdf_name, no_pdf=False):  # {{{
+def convert_to_pdf(pdf_name, no_pdf=False):
     # Get all slides sorted by name
     slides = [os.path.join(SLIDES_FOLDER, slide) for slide in os.listdir(SLIDES_FOLDER)]
 
     if not no_pdf:
-        print("\r" + "Generating pdf...", end="", flush=True)
+        print("\x1b[1K\r" + "Generating pdf...", end="")
 
         # Combine slides to a pdf using img2pdf
         with open(f"{pdf_name}.pdf", "wb") as pdf:
             pdf.write(img2pdf.convert(slides))
 
-        print("\r" + f"Generated: {pdf_name}.pdf")
+        print("\x1b[1K\r" + f"Generated: {pdf_name}.pdf")
 
         # Remove "slides" folder
-        shutil.rmtree(SLIDES_FOLDER)  # }}}
+        shutil.rmtree(SLIDES_FOLDER)
 
 
 if __name__ == "__main__":
