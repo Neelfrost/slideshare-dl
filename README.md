@@ -1,4 +1,18 @@
-## Usage
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Neelfrost/github-assets/main/slideshare/logo.png" alt="slideshare-dl logo" width="192">
+</p>
+
+<h1 align="center">slideshare-dl</h1>
+
+<p align="center">
+  <b>A simple, multi-threaded, CLI slideshare presentation downloader 🚀</b>
+  <br>
+  <b>No login required!</b>
+</p>
+
+<img src="https://raw.githubusercontent.com/Neelfrost/github-assets/main/slideshare/demo.gif" width="100%">
+
+## Installation
 
 Clone repo:
 
@@ -12,7 +26,7 @@ Install dependencies:
 pip install -I -r requirements.txt
 ```
 
-Run script:
+## Usage
 
 ```powershell
 py .\slideshare-dl.py -h
@@ -33,5 +47,5 @@ optional arguments:
 
 ## Todo
 
-- [x] Speed up download using multi-threading
-- [ ] Implement OCR
+-   [x] Speed up download using multi-threading
+-   [ ] Implement OCR
