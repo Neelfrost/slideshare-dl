@@ -67,6 +67,8 @@ def download_slides(url):
     else:
         exit("No slides were found...")
 
+    print(f"Number of slides to be downloaded: {len(images)}")
+
     # Parallelize slide downloading
     with ThreadPoolExecutor() as executor:
         for idx, image in enumerate(images, start=1):
