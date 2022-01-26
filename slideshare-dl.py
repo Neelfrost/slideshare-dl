@@ -12,6 +12,12 @@ SLIDES_FOLDER = os.path.join(os.getcwd(), "slides")
 
 
 def create_parser():
+    """Create CLI parser using argparse
+
+    Returns:
+            args namespace
+    """
+
     # Init parser
     parser = argparse.ArgumentParser(
         description="Download a slideshare presentation.",
@@ -30,11 +36,18 @@ def create_parser():
         action="store_true",
     )
 
-    # Return args namespace
     return parser.parse_args()
 
 
 def download_slide(idx, image_url, image_path):
+    """Use requests module to download a slide (image)
+
+    Args:
+        idx (string): index of slide
+        image_url (string): url of slide
+        image_path (string): save path of slide
+    """
+
     # Print slide being downloaded
     print("\x1b[1K\r" + f"Downloading slide: {idx}", end="")
     # Download slide, save it in "slides" folder
@@ -42,9 +55,14 @@ def download_slide(idx, image_url, image_path):
         image.write(requests.get(image_url).content)
 
 
-def download_slides(url):
-    # Check if url if of slideshare
-    # Exit if not
+def download_presentation(url):
+    """Download a slideshare presentation
+
+    Args:
+        url (string): url of slideshare presentation
+    """
+
+    # Exit if url does not belong to slideshare
     if r"www.slideshare.net" not in url:
         exit("Invalid link...")
 
@@ -73,7 +91,10 @@ def download_slides(url):
             image_name = (
                 f"{str(idx).zfill(len(str(no_of_images)))}-{image_url.split('/')[-1]}"
             )
+            # Save path of image (cwd/slides/image_name)
             image_path = os.path.join("slides", image_name)
+
+            # Check if slide is already downloaded
             if os.path.isfile(image_path):
                 print("\x1b[1K\r" + f"Slide: {idx} exists", end="")
             else:
@@ -84,23 +105,32 @@ def download_slides(url):
 
 
 def convert_to_pdf(pdf_name, no_pdf=False):
+    """Combine set of images within 'slides' folder into a pdf using img2pdf
+
+    Args:
+        pdf_name (string): name of the final pdf
+        no_pdf (bool): True to generate a pdf, False to skip generation
+    """
+
+    if no_pdf:
+        return
+
     # Get all slides sorted by name
     slides = [os.path.join(SLIDES_FOLDER, slide) for slide in os.listdir(SLIDES_FOLDER)]
 
-    if not no_pdf:
-        print("\x1b[1K\r" + "Generating pdf...", end="")
+    print("\x1b[1K\r" + "Generating pdf...", end="")
 
-        # Combine slides to a pdf using img2pdf
-        with open(f"{pdf_name}.pdf", "wb") as pdf:
-            pdf.write(img2pdf.convert(slides))
+    # Combine slides into a pdf using img2pdf
+    with open(f"{pdf_name}.pdf", "wb") as pdf:
+        pdf.write(img2pdf.convert(slides))
 
-        print("\x1b[1K\r" + f"Generated: {pdf_name}.pdf")
+    print("\x1b[1K\r" + f"Generated: {pdf_name}.pdf")
 
-        # Remove "slides" folder
-        shutil.rmtree(SLIDES_FOLDER)
+    # Remove "slides" folder
+    shutil.rmtree(SLIDES_FOLDER)
 
 
 if __name__ == "__main__":
     args = create_parser()
-    download_slides(args.url)
+    download_presentation(args.url)
     convert_to_pdf(args.url.split("/")[-1], no_pdf=args.nopdf)
