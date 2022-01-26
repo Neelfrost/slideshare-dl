@@ -51,37 +51,34 @@ def download_slides(url):
     # Scrape url for slide images
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
-    images = soup.find_all("img", class_="slide_image")
+    images = soup.find_all("img", class_="slide-image")
     no_of_images = len(images)
+
+    # Exit if presentation not found
+    if not images:
+        exit("No slides were found...")
+    print(f"Number of slides to be downloaded: {len(images)}")
 
     # Make "slides" dir in cwd
     if not os.path.isdir(SLIDES_FOLDER):
         os.mkdir("slides")
 
-    # Use highest slide resolution available
-    # Exit if not found
-    if images[0].has_attr("data-full"):
-        res = "data-full"
-    elif images[0].has_attr("data-normal"):
-        res = "data-normal"
-    else:
-        exit("No slides were found...")
-
-    print(f"Number of slides to be downloaded: {len(images)}")
-
     # Parallelize slide downloading
     with ThreadPoolExecutor() as executor:
         for idx, image in enumerate(images, start=1):
-            image_url = image.get(res).split("?")[0]
+            # Get image url from srcset attribute (csv of image urls, with last value being the highest res)
+            image_url = image.get("srcset").split(",")[-1].split("?")[0]
+
             # Format image name to include slide index (with leading zeros)
             image_name = (
-                str(idx).zfill(len(str(no_of_images))) + "-" + image_url.split("/")[-1]
+                f"{str(idx).zfill(len(str(no_of_images)))}-{image_url.split('/')[-1]}"
             )
             image_path = os.path.join("slides", image_name)
             if os.path.isfile(image_path):
                 print("\x1b[1K\r" + f"Slide: {idx} exists", end="")
             else:
                 executor.submit(download_slide, idx, image_url, image_path)
+
     # "\x1b[1K" clear to end of line
     print("\x1b[1K\r" + "Slides downloaded")
 
