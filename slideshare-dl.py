@@ -1,13 +1,12 @@
 import argparse
-from concurrent.futures import ThreadPoolExecutor
 import os
 import shutil
+from concurrent.futures import ThreadPoolExecutor
 from sys import exit
 
-from bs4 import BeautifulSoup
 import img2pdf
 import requests
-
+from bs4 import BeautifulSoup
 
 SLIDES_FOLDER = os.path.join(os.getcwd(), "slides")
 
@@ -39,7 +38,8 @@ def download_slide(idx, image_url, image_path):
     # Print slide being downloaded
     print("\x1b[1K\r" + f"Downloading slide: {idx}", end="")
     # Download slide, save it in "slides" folder
-    return os.system(f"curl.exe -s {image_url} -o {image_path}")
+    with open(image_path, "wb") as image:
+        image.write(requests.get(image_url).content)
 
 
 def download_slides(url):
