@@ -20,16 +20,16 @@ Clone repo:
 git clone https://github.com/Neelfrost/slideshare-dl.git; cd .\slideshare-dl
 ```
 
-Install dependencies:
+Install using pip:
 
 ```powershell
-pip install -I -r requirements.txt
+pip install .
 ```
 
 ## Usage
 
 ```powershell
-py .\slideshare-dl.py -h
+slideshare-dl.exe --help
 ```
 
 ```powershell

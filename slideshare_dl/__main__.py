@@ -2,6 +2,7 @@ import argparse
 import os
 import shutil
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import freeze_support
 from sys import exit
 
 import img2pdf
@@ -130,7 +131,12 @@ def convert_to_pdf(pdf_name, no_pdf=False):
     shutil.rmtree(SLIDES_FOLDER)
 
 
-if __name__ == "__main__":
+def main():
+    freeze_support()
     args = create_parser()
     download_presentation(args.url)
     convert_to_pdf(args.url.split("/")[-1], no_pdf=args.nopdf)
+
+
+if __name__ == "__main__":
+    main()
