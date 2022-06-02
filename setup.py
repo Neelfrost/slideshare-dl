@@ -16,4 +16,9 @@ setup(
     packages=["slideshare_dl"],
     install_requires=read_contents("requirements.txt").splitlines(),
     entry_points={"console_scripts": ["slideshare-dl = slideshare_dl.__main__:main"]},
+    classifiers=[
+        "Environment :: Console",
+        "License :: MIT",
+        "Operating System :: OS Independent",
+    ],
 )
