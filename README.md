@@ -33,14 +33,14 @@ slideshare-dl.exe --help
 ```
 
 ```powershell
-usage: slideshare-dl.py [-h] [--nopdf] url
+usage: slideshare-dl [-h] [--nopdf] url
 
 Download a slideshare presentation.
 
 positional arguments:
   url         Slideshare presentation url.
 
-optional arguments:
+options:
   -h, --help  show this help message and exit
   --nopdf     Do not combine slides into a pdf. (Individual slides are saved in "slides" folder)
 ```
